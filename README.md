@@ -1,4 +1,4 @@
-Design Pattrens
+Design Patterns
 ================
 結城 浩『Java言語で学ぶデザインパターン入門』をPythonで置き換える
 
