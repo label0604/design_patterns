@@ -61,6 +61,14 @@ if __name__ == "__main__":
     for book in books:
         book_shelf.append_books(book)
 
-    # Use Iterator
+    # Use Iterator(for...in)
+    print('--- Use for...in ---')
     for book in book_shelf:
+        print(book.get_name())
+
+    # Use Iterator(while)
+    print('--- Use while ---')
+    it = iter(book_shelf)
+    while it._has_next():
+        book = it.__next__()
         print(book.get_name())
