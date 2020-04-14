@@ -1,3 +1,4 @@
+import sys
 from abc import ABCMeta, abstractmethod
 
 
@@ -23,7 +24,7 @@ class Director:
     def __init__(self, builder):
         self.builder = builder
 
-    def contruct(self):
+    def construct(self):
         self.builder.make_title('Greeding')
         self.builder.make_string('朝から昼にかけて')
         self.builder.make_items(['おはようございます。',
@@ -61,9 +62,54 @@ class TextBuilder(Builder):
         return "".join(self.buffer)
 
 
+class HTMLBuilder(Builder):
+    def __init__(self, filename):
+        self.filename = filename
+
+    def make_title(self, title):
+        with open(self.filename, mode='w') as f:
+            f.writelines(
+                '<html><head><title>{title}</title></head><body>'.format(title=title))
+            f.writelines('<h1>{title}</h1>'.format(title=title))
+
+    def make_string(self, string):
+        with open(self.filename, mode='a') as f:
+            f.writelines('<p>{string}</p>'.format(string=string))
+
+    def make_items(self, items):
+        with open(self.filename, mode='a') as f:
+            f.writelines('<ul>')
+            for item in items:
+                f.writelines('<li>{item}</li>'.format(item=item))
+            f.writelines('</ul>')
+
+    def close(self):
+        with open(self.filename, mode='a') as f:
+            f.writelines('</body><html>')
+
+    def get_result(self):
+        return self.filename
+
+
+def usage():
+    print('Usage: python main.py plain -> プレーンテキスト')
+    print('Usage: python main.py html  -> HTMLファイル')
+
+
 if __name__ == '__main__':
-    builder = TextBuilder()
-    director = Director(builder)
-    director.contruct()
-    result = builder.get_result()
-    print(result, end='')
+    args = sys.argv
+    if len(args) != 2:
+        usage()
+        sys.exit()
+    if args[1] == 'plain':
+        builder = TextBuilder()
+        director = Director(builder)
+        director.construct()
+        result = builder.get_result()
+        print(result, end='')
+    elif args[1] == 'html':
+        builder = HTMLBuilder('output.html')
+        director = Director(builder)
+        director.construct()
+        filename = builder.get_result()
+        print('{filename} を生成しました'.format(filename=filename))
