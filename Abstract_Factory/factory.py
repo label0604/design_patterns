@@ -48,7 +48,7 @@ class Page(metaclass=ABCMeta):
 class Factory(metaclass=ABCMeta):
     @classmethod
     def get_factory(cls, classname):
-        import listfactory
+        from listfactory import ListFactory
         return eval(classname)()
 
     @abstractmethod
